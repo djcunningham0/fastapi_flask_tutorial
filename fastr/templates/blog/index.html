@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Posts{% endblock %}</h1>
+  {% if request.session.user %}
+    <a class="action" href="{{ url_for('create_page') }}">New</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% for post in posts %}
+    <article class="post">
+      <header>
+        <div>
+          <h2>{{ post.title }}</h2>
+          <div class="about">by {{ post.author.username }} on {{ post.created.strftime('%Y-%m-%d') }}</div>
+        </div>
+        {% if request.session.get("user", {}).get("id") == post['author_id'] %}
+          <a class="action" href="{{ url_for('update_page', id=post.id) }}">Edit</a>
+        {% endif %}
+      </header>
+      <p class="body">{{ post.body }}</p>
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
